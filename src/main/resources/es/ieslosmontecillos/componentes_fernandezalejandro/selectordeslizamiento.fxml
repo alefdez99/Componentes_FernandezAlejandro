@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+         minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0"
+         type="AnchorPane" xmlns="http://javafx.com/javafx/8"
+         xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox alignment="CENTER" layoutX="-65.0" layoutY="-56.0" spacing="5.0"
+              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Button fx:id="previousButton" minWidth="25.0"
+                        mnemonicParsing="false" prefWidth="25.0" text="&lt;" />
+                <Label fx:id="label" alignment="CENTER" contentDisplay="CENTER"
+                       prefWidth="500.0" text="Label" />
+                <Button fx:id="nextButton" minWidth="25.0"
+                        prefWidth="25.0" text="&gt;" />
+            </children>
+        </HBox>
+    </children>
+</fx:root>
+
