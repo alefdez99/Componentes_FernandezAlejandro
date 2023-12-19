@@ -18,24 +18,20 @@ import java.io.IOException;
 public class Temporizador extends Label
 {
     // Atributos de la clase Temporizador
-    private IntegerProperty time = new SimpleIntegerProperty();
+    private static IntegerProperty time;
     private EventHandler<ActionEvent> onFinished;
+    private static Timeline timeline;
 
-    // Getter  y Setters
-    public int getTime() {return time.get();}
-    public IntegerProperty timeProperty() {return time;}
-    public void setTime(int time) {this.time.set(time);}
-
-    public EventHandler<ActionEvent> getOnFinished() {return onFinished;}
-
-    public void setOnFinished(EventHandler<ActionEvent> onFinished) {this.onFinished = onFinished;}
 
     // Constructor
     public Temporizador()
     {
+        time = new SimpleIntegerProperty();
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("temporizador.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
+
         try
         {
             fxmlLoader.load();
@@ -45,67 +41,59 @@ public class Temporizador extends Label
             throw new RuntimeException(exception);
         }
 
-        final Timeline timeline = new Timeline();
-        //timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.setAutoReverse(false);
-
         System.out.println("Duración del temporizador: " + time.get());
+        time.addListener(new ChangeListener<Number>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number previousNumber, Number newNumber)
+            {
+                Temporizador.this.setText("Quedan " + newNumber + " segundos restantes");
+                System.out.println("Duración del temporizador (tiempo cambiado): " + newNumber);
+            }
+        });
 
-        final KeyValue kv = new KeyValue(time, 0);
-        final KeyFrame kf = new KeyFrame(Duration.seconds(time.get()), kv);
-
-        setText(time.get() + " segundos restantes");
-
-        timeline.getKeyFrames().add(kf);
-        timeline.play();
-
+        /*
         timeline.setOnFinished(e -> {
            timeline.stop();
            //timeline.playFromStart();
             setText("Tiempo acabado");
             System.out.println("Tiempo acabado");
-
         });
-
-        //textProperty().bind(time.asString(" %d segundos "));
-
-        /*
-        time.addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1)
-            {
-                //textProperty().bind(t1.intValue(" %d segundos "));
-                setText(time.get() + " segundos restantes");
-                System.out.println("Segundos restantes: " + time.get());
-                System.out.println(number.intValue() + " ->  number");
-                System.out.println(t1.intValue() + " ->  t1");
-            }
-        });
-
-         */
-
-        //int currentTime = getTime();
-
-        //this.setText(currentTime + " segundos restantes");
-
-
-        // Evento de finalización
-
-
-
-
-        /*
-        // Calcular horas, munutos y segundos a partir del tiempo total en segundos
-        IntegerProperty horas = new SimpleIntegerProperty();
-        IntegerProperty minutos = new SimpleIntegerProperty();
-        IntegerProperty segundos = new SimpleIntegerProperty();
-
-        horas.bind(time.divide(3600));
-        minutos.bind(time.divide(60).subtract(horas.multiply(60)));
-        segundos.bind(time.subtract(horas.multiply(3600)).subtract(minutos.multiply(60)));
-
-        textProperty().bind(horas.asString(" %d horas ").concat(minutos.asString(" %d minutos ")).concat(segundos.asString(" %d segundos")));
 
          */
     }
+
+    public void start()
+    {
+        timeline = new Timeline();
+        timeline.setAutoReverse(false);
+
+        System.out.println("Duración del temporizador (antes de KeyValue y KeyFrame): " + time.get());
+        final KeyValue kv = new KeyValue(time, 0);
+        final KeyFrame kf = new KeyFrame(Duration.seconds(time.get()), kv);
+
+        timeline.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Temporizador.this.setText("Tiempo acabado");
+                System.out.println("Tiempo acabado");
+
+                // Disparamos el evento personalizado cuando lo cuenta haya terminado
+                fireEvent(new ActionEvent());
+            }
+        });
+
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+
+    // Getter  y Setters
+    public int getTime() {return time.get();}
+    public IntegerProperty timeProperty() {return time;}
+    public void setTime(int time) {this.time.set(time);}
+
+    public EventHandler<ActionEvent> getOnFinished() {return onFinishedProperty().get();}
+    public final ObjectProperty<EventHandler<ActionEvent>> onFinishedProperty() {return (ObjectProperty<EventHandler<ActionEvent>>) onFinished;}
+
+    public void setOnFinished(EventHandler<ActionEvent> onFinished) {this.onFinished = onFinished;}
 }
