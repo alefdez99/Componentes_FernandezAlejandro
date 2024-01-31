@@ -7,7 +7,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -47,10 +46,11 @@ public class Temporizador extends Label
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number previousNumber, Number newNumber)
             {
-                Temporizador.this.setText("Quedan " + newNumber + " segundos restantes");
-                System.out.println("Duración del temporizador (tiempo cambiado): " + newNumber);
+                Temporizador.this.setText("|" + newNumber + " segundos restantes");
             }
         });
+
+
 
         /*
         timeline.setOnFinished(e -> {
@@ -68,20 +68,23 @@ public class Temporizador extends Label
         timeline = new Timeline();
         timeline.setAutoReverse(false);
 
-        System.out.println("Duración del temporizador (antes de KeyValue y KeyFrame): " + time.get());
+        //System.out.println("Duración del temporizador (antes de KeyValue y KeyFrame): " + time.get());
         final KeyValue kv = new KeyValue(time, 0);
-        final KeyFrame kf = new KeyFrame(Duration.seconds(time.get()), kv);
+        final KeyFrame kf = new KeyFrame(Duration.seconds(time.get()), onFinished,kv);
 
+        /*
         timeline.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                Temporizador.this.setText("Tiempo acabado");
-                System.out.println("Tiempo acabado");
+                //Temporizador.this.setText("Tiempo acabado");
+                //System.out.println("Tiempo acabado");
 
                 // Disparamos el evento personalizado cuando lo cuenta haya terminado
-                fireEvent(new ActionEvent());
+                //fireEvent(new ActionEvent());
             }
         });
+
+         */
 
         timeline.getKeyFrames().add(kf);
         timeline.play();
